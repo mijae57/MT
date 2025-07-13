@@ -160,6 +160,25 @@
     .direction-btn:hover {
       background-color: #449d44;
     }
+    .topic-box {
+  margin: 30px auto 20px auto;
+  max-width: 600px;
+  padding: 30px 20px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+  background-color: #f0f8ff;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
   </style>
 </head>
 <body>
@@ -180,9 +199,20 @@
       <button class="open-modal-btn" onclick="openModal()">이동하기</button>
       
       <div class="label-below">도착</div>
+
+     
+    
+
     </div>
 
     
+  <div style="margin-top: 90px;">
+    <div id="topicDisplay" class="topic-box">
+    키워드
+    </div>
+    <button class="open-modal-btn" onclick="pickTopic()">키워드 뽑기</button>
+  </div>
+
   </div>
 
   <!-- 모달 -->
@@ -246,6 +276,35 @@
     }
 
     createPlayers();
+        // 주제 리스트
+    const topics = [
+      "인공지능의 미래",
+      "우주 탐사의 필요성",
+      "인터넷 검열의 윤리",
+      "생명연장의 기술",
+      "메타버스의 가능성",
+      "기후변화와 우리의 책임",
+      "양자컴퓨터란 무엇인가",
+      "전쟁과 기술 발전",
+      "로봇이 인간을 대체할 수 있을까?",
+      "디지털 노마드 시대"
+    ];
+
+    function pickTopic() {
+    const randomIndex = Math.floor(Math.random() * topics.length);
+    const selected = topics[randomIndex];
+
+    const display = document.getElementById("topicDisplay");
+    display.innerText = selected;
+
+    // 애니메이션 효과 다시 주기
+    display.classList.remove("topic-box");
+    void display.offsetWidth; // reflow 강제
+    display.classList.add("topic-box");
+}
+
+
+
   </script>
 </body>
 </html>
