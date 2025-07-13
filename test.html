@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>휴대폰 HTML 테스트</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f0f0f0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hello from your phone!</h1>
+  <p>이 HTML 파일은 휴대폰 브라우저에서도 잘 작동합니다.</p>
+  <button onclick="changeColor()">배경색 바꾸기</button>
+
+  <script>
+    function changeColor() {
+      const colors = ['#f0f0f0', '#ffcccb', '#cce5ff', '#d4edda'];
+      document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    }
+  </script>
+</body>
+</html>
