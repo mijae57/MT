@@ -84,12 +84,13 @@ body {
   padding: 14px 5px;
   font-size: 18px;
   background-color: #4a90e2;
-  width: 200px;
+  width: 180px;
   color: white;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin: 10px;
 }
 
 .open-modal-btn:hover {
@@ -101,25 +102,17 @@ body {
   display: none;
   position: fixed;
   z-index: 999;
-  left: 0;
-  top: 200px;
-  width: 100%;
-  height: 100%;
-}
-
-.modal-content {
+  left: 50%;
+  top: 310px;
+  transform: translateX(-50%);
+  width: 450px;
+  height: auto;
   background-color: white;
-  margin: 10% auto;
-  padding: 30px;
-  width: 80%;
-  max-width: 400px;
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0,0,0,0.25);
-}
-
-.modal h3 {
-  margin-bottom: 15px;
-  font-size: 22px;
+  user-select: none;
+  perspective: 600px;
+  padding: 30px;
 }
 
 .modal select,
@@ -156,6 +149,56 @@ body {
   background-color: #449d44;
 }
 
+/* 3D 주사위 스타일 (1과 2 3개씩) */
+.dice-container {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 10px;
+  position: relative;
+  transform-style: preserve-3d;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  background: transparent;  /* 흰 배경 제거 */
+  user-select: none;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+.dice-face {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 15px;
+  border: 2px solid #333;
+  box-shadow: inset 0 0 20px #bbb;
+  font-size: 64px;
+  font-weight: bold;
+  color: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  background: #f7f7f7; /* 아주 옅은 회색 배경 추가 */
+}
+
+
+/* 면 위치 */
+.face1 { transform: rotateY(0deg) translateZ(50px); } /* 1 */
+.face2 { transform: rotateY(180deg) translateZ(50px); } /* 2 */
+.face3 { transform: rotateX(90deg) translateZ(50px); } /* 1 */
+.face4 { transform: rotateX(-90deg) translateZ(50px); } /* 2 */
+.face5 { transform: rotateY(90deg) translateZ(50px); } /* 1 */
+.face6 { transform: rotateY(-90deg) translateZ(50px); } /* 2 */
+
+/* 계속 회전 애니메이션 기본 (멈출 때 clear) */
+@keyframes continuousRotate {
+  from {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}
+
 .topic-box {
   margin: 40px auto 20px auto;
   max-width: 700px;
@@ -169,12 +212,15 @@ body {
   transition: all 0.3s ease;
   animation: fadeIn 0.3s ease;
 }
+.topic-box.final {
+  background-color: #d1f5d3 !important;
+  color: #333;
+}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.97); }
   to   { opacity: 1; transform: scale(1); }
 }
-
 
   </style>
 </head>
@@ -188,121 +234,222 @@ body {
       <div class="cell"></div>
       <div class="cell"></div>
       <div class="cell"></div>
-      <div class="cell last"></div> <!-- ← 6번째 칸 추가 -->
+      <div class="cell last"></div>
     </div>
 
-
-    <div style="display: flex; justify-content: center; gap: 300px; ">
+    <div style="display: flex; justify-content: center; gap: 300px;">
       <div class="label-below">출발</div>
-      
       <button class="open-modal-btn" onclick="openModal()">이동하기</button>
-      
       <div class="label-below">도착</div>
-
-     
-    
-
     </div>
 
-    
-  <div style="margin-top: 110px;">
-    <div id="topicDisplay" class="topic-box">
-    키워드
+    <div style="margin-top: 110px;">
+      <div id="topicDisplay" class="topic-box">
+        키워드
+      </div>
+      <button class="open-modal-btn" onclick="pickTopic()">키워드 뽑기</button>
     </div>
-    <button class="open-modal-btn" onclick="pickTopic()">키워드 뽑기</button>
-  </div>
-
   </div>
 
   <!-- 모달 -->
   <div id="moveModal" class="modal">
-    <div class="modal-content">
-      <div class="close-btn" onclick="closeModal()">×</div>
-      <select id="playerSelect">
-        <option value="0">빨강</option>
-        <option value="1">파랑</option>
-        <option value="2">초록</option>
-      </select>
-      <div>
-        <button class="direction-btn" onclick="move(-1)">◀️ 뒤로</button>
-        <button class="direction-btn" onclick="move(1)">▶️ 앞으로</button>
-      </div>
+    <div class="close-btn" onclick="closeModal()">×</div>
+    <select id="playerSelect">
+      <option value="0">빨강</option>
+      <option value="1">파랑</option>
+      <option value="2">초록</option>
+    </select>
+
+    <div class="dice-container" id="dice">
+      <div class="dice-face face1">1</div>
+      <div class="dice-face face2">2</div>
+      <div class="dice-face face3">1</div>
+      <div class="dice-face face4">2</div>
+      <div class="dice-face face5">1</div>
+      <div class="dice-face face6">2</div>
+    </div>
+
+    <button class="open-modal-btn" id="diceBtn" onclick="rollDiceAndMove()">🎲 주사위 굴리기</button>
+    <button class="open-modal-btn" id="manualBtn" onclick="switchToManual()">수동 이동</button>
+
+    <div id="manualControls" style="margin-top: 15px; display:none;">
+      <button class="direction-btn" onclick="manualMove(-1)">◀️ 뒤로</button>
+      <button class="direction-btn" onclick="manualMove(1)">▶️ 앞으로</button>
     </div>
   </div>
 
-  <script>
-    const positions = [0, 0, 0];
-    const verticalOffsets = [2, 48, 95]; 
+<script>
+  const positions = [0, 0, 0];
+  const verticalOffsets = [2, 48, 95];
+  const board = document.getElementById("gameBoard");
+  const playerElems = [];
 
-    const board = document.getElementById("gameBoard");
-    const playerElems = [];
+  function createPlayers() {
+    for (let i = 0; i < 3; i++) {
+      const player = document.createElement("div");
+      player.className = `player p${i}`;
+      board.appendChild(player);
+      playerElems.push(player);
+      updatePosition(i);
+    }
+  }
 
-    function createPlayers() {
-      for (let i = 0; i < 3; i++) {
-        const player = document.createElement("div");
-        player.className = `player p${i}`;
-        board.appendChild(player);
-        playerElems.push(player);
-        updatePosition(i);
+  function updatePosition(index) {
+    const pos = positions[index];
+    const cell = board.children[pos];
+    const left = cell.offsetLeft + cell.offsetWidth / 2;
+    const top = cell.offsetTop + verticalOffsets[index];
+    playerElems[index].style.left = `${left}px`;
+    playerElems[index].style.top = `${top}px`;
+  }
+
+  function manualMove(direction) {
+    const index = parseInt(document.getElementById("playerSelect").value);
+    positions[index] += direction;
+    if (positions[index] < 0) positions[index] = 0;
+    if (positions[index] > 5) positions[index] = 5;
+    updatePosition(index);
+  }
+
+  let     rolling = false;
+  let animationFrameId;
+  let angleX = 0;
+  let angleY = 0;
+  let speed = 0;
+
+  const diceRotations = {
+    1: { x: 0, y: 0 },
+    2: { x: 180, y: 0 }
+  };
+
+  function continuousRotateDice() {
+    if (!rolling) {
+      angleX = (angleX + 1) % 360;
+      angleY = (angleY + 1) % 360;
+      document.getElementById("dice").style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+    }
+    animationFrameId = requestAnimationFrame(continuousRotateDice);
+  }
+
+  function rollDiceAndMove() {
+    if (rolling) return;
+    rolling = true;
+    speed = 30;
+
+    const dice = document.getElementById("dice");
+
+    function slowDown() {
+      
+      angleX = (angleX + speed) % 360;
+      angleY = (angleY + speed) % 360;
+      dice.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+
+      speed *= 0.90;
+
+      if (speed < 0.1) {
+      rolling = false;
+      cancelAnimationFrame(animationFrameId);
+
+      const finalValue = Math.random() < 0.7 ? 1 : 2;
+
+      const rot = diceRotations[finalValue];
+  
+      // 애니메이션 효과 적용
+      dice.style.transition = 'transform 1s ease';
+      dice.style.transform = `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`;
+
+  // 애니메이션 끝나면 플레이어 이동
+      dice.addEventListener('transitionend', function handler() {
+        movePlayersByDice(finalValue);
+        dice.style.transition = '';  // transition 리셋
+        dice.removeEventListener('transitionend', handler);
+  });
+} else {
+        requestAnimationFrame(slowDown);
       }
     }
 
-    function updatePosition(index) {
-      const pos = positions[index];
-      const cell = board.children[pos];
+    slowDown();
+  }
 
-      const left = cell.offsetLeft + cell.offsetWidth / 2;
-      const top = cell.offsetTop + verticalOffsets[index];
+  function movePlayersByDice(diceValue) {
+    const selected = parseInt(document.getElementById("playerSelect").value);
 
-      playerElems[index].style.left = `${left}px`;
-      playerElems[index].style.top = `${top}px`;
+    positions[selected] += diceValue;
+    if (positions[selected] > 5) positions[selected] = 5;
+
+    for (let i = 0; i < 3; i++) {
+      if (i !== selected) {
+        positions[i] = Math.max(0, positions[i] - 1);
+      }
     }
 
-    function move(direction) {
-      const index = parseInt(document.getElementById("playerSelect").value);
-      positions[index] += direction;
-      if (positions[index] < 0) positions[index] = 0;
-      if (positions[index] > 5) positions[index] = 5;
-      updatePosition(index);
+    for (let i = 0; i < 3; i++) {
+      updatePosition(i);
     }
+  }
 
-    function openModal() {
-      document.getElementById("moveModal").style.display = "block";
-    }
+  function switchToManual() {
+    document.getElementById("manualControls").style.display = "block";
+    document.getElementById("diceBtn").style.display = "none";
+    document.getElementById("manualBtn").style.display = "none";
+  }
 
-    function closeModal() {
-      document.getElementById("moveModal").style.display = "none";
-    }
+  function openModal() {
+    document.getElementById("moveModal").style.display = "block";
+    document.getElementById("manualControls").style.display = "none";
+    document.getElementById("diceBtn").style.display = "inline-block";
+    document.getElementById("manualBtn").style.display = "inline-block";
+  }
 
-    createPlayers();
-        // 주제 리스트
-    const topics = [
-      "한국사 또는 세계사",
-      "사자성어 및 속담",
-      "생명연장의 기술",
-      "메타버스의 가능성",
-      "기후변화와 우리의 책임",
-      "양자컴퓨터란 무엇인가",
-      "전쟁과 기술 발전",
-      "로봇이 인간을 대체할 수 있을까?",
-      "디지털 노마드 시대"
-    ];
+  function closeModal() {
+    document.getElementById("moveModal").style.display = "none";
+  }
 
-    function pickTopic() {
-    const randomIndex = Math.floor(Math.random() * topics.length);
-    const selected = topics[randomIndex];
+  const topics = [
+    "한국사 또는 세계사",
+    "사자성어 및 속담",
+    "경제 및 금융",
+    "예술 및 문학",
+    "과학 및 기술",
+    "넌센스 퀴즈",
+    "랜덤 주제",
+    "역사적 인물",
+  ];
 
+  function pickTopic() {
     const display = document.getElementById("topicDisplay");
-    display.innerText = `Key Word : ${selected}`;
+    let count = 0;
+    let delay = 50;
 
-    // 애니메이션 효과 다시 주기
-    display.classList.remove("topic-box");
-    void display.offsetWidth; // reflow 강제
-    display.classList.add("topic-box");
-}
+    const maxCycles = 20;
+    const slowdownFactor = 1.15;
 
+    display.classList.remove("final");
 
+    function animate() {
+      const randomIndex = Math.floor(Math.random() * topics.length);
+      display.innerText = `${topics[randomIndex]}`;
 
-  </script>
+      count++;
+      if (count < maxCycles) {
+        setTimeout(animate, delay);
+        delay *= slowdownFactor;
+      } else {
+        const finalIndex = Math.floor(Math.random() * topics.length);
+        display.innerText = `${topics[finalIndex]}`;
+        display.classList.remove("topic-box");
+        void display.offsetWidth;
+        display.classList.add("topic-box");
+        display.classList.add("final");
+      }
+    }
+
+    animate();
+  }
+
+  createPlayers();
+  continuousRotateDice();
+</script>
 </body>
 </html>
