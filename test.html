@@ -2,7 +2,6 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>사람 이동 게임 - 연한색 및 텍스트 위치 조정</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -11,12 +10,8 @@
       padding: 20px;
     }
 
-    h2 {
-      margin-bottom: 10px;
-    }
-
     .board-wrapper {
-      max-width: 700px;
+      max-width: 800px;
       margin: 30px auto;
     }
 
@@ -93,7 +88,7 @@
     }
 
     .open-modal-btn {
-      padding: 12px 24px;
+      padding: 8px 22px;
       font-size: 16px;
       background-color: #4a90e2;
       color: white;
@@ -101,7 +96,7 @@
       border-radius: 10px;
       cursor: pointer;
       transition: background-color 0.3s;
-      margin-top: 20px;
+      
     }
 
     .open-modal-btn:hover {
@@ -113,17 +108,17 @@
       display: none;
       position: fixed;
       z-index: 999;
-      left: 0; top: 0;
+      left: 0; top: 150px;
       width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
+      
     }
 
     .modal-content {
       background-color: white;
       margin: 10% auto;
-      padding: 30px;
-      width: 90%;
-      max-width: 400px;
+      padding: 20px;
+      width: 80%;
+      max-width: 300px;
       border-radius: 15px;
       box-shadow: 0 0 10px rgba(0,0,0,0.25);
     }
@@ -168,7 +163,7 @@
   </style>
 </head>
 <body>
-  <h2>사람 이동 게임 - 연한색 및 텍스트 위치 조정</h2>
+  <h2>JUST DO IT - 고급 지식 퀴즈</h2>
 
   <div class="board-wrapper">
     <div class="board" id="gameBoard">
@@ -179,7 +174,7 @@
       <div class="cell last"></div>
     </div>
 
-    <div style="display: flex; justify-content: center; gap: 100px; ">
+    <div style="display: flex; justify-content: center; gap: 160px; ">
       <div class="label-below">출발</div>
       
       <button class="open-modal-btn" onclick="openModal()">이동하기</button>
@@ -194,11 +189,10 @@
   <div id="moveModal" class="modal">
     <div class="modal-content">
       <div class="close-btn" onclick="closeModal()">×</div>
-      <h3>사람 선택</h3>
       <select id="playerSelect">
-        <option value="0">사람 1 (빨강)</option>
-        <option value="1">사람 2 (파랑)</option>
-        <option value="2">사람 3 (초록)</option>
+        <option value="0">빨강</option>
+        <option value="1">파랑</option>
+        <option value="2">초록</option>
       </select>
       <div>
         <button class="direction-btn" onclick="move(-1)">◀️ 뒤로</button>
