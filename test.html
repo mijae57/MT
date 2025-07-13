@@ -3,172 +3,168 @@
 <head>
   <meta charset="UTF-8" />
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      background-color: #fdfdfd;
-      padding: 20px;
-    }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+  background-color: #fdfdfd;
+  padding: 40px;
+}
 
-    .board-wrapper {
-      max-width: 800px;
-      margin: 30px auto;
-    }
+.board-wrapper {
+  max-width: 1000px;
+  margin: 40px auto;
+}
 
-    .board {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      position: relative;
-      height: 150px;
-    }
+.board {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  position: relative;
+  height: 200px;
+}
 
-    .cell {
-      width: 130px;
-      height: 110px;
-      border-radius: 15px;
-      background-color: #e3eaf5;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 20px;
-      color: #444;
-      user-select: none;
-    }
+.cell {
+  width: 160px;
+  height: 140px;
+  border-radius: 20px;
+  background-color: #e3eaf5;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 24px;
+  color: #444;
+  user-select: none;
+}
 
-    /* 첫번째 칸 연한 초록 */
-    .cell.first {
-      background-color: #b6d7a8;
-      color: #33691e;
-    }
+.cell.first {
+  background-color: #b6d7a8;
+  color: #33691e;
+}
 
-    /* 마지막 칸 연한 파랑 */
-    .cell.last {
-      background-color: #a9cce3;
-      color: #1b4f72;
-    }
+.cell.last {
+  background-color: #a9cce3;
+  color: #1b4f72;
+}
 
-    /* 출발/도착 텍스트를 칸 아래에 */
-    .label-below {
-      font-weight: bold;
-      font-size: 18px;
-      color: #000;
-      
-      width: 130px;
-      text-align: center;
-      user-select: none;
-      margin-left: auto;
-      margin-right: auto;
-      font-family: 'Segoe UI', sans-serif;
-    }
+.label-below {
+  font-weight: bold;
+  font-size: 22px;
+  color: #000;
+  width: 160px;
+  text-align: center;
+  user-select: none;
+}
 
-    .player {
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      left: 50%;
-      transform: translateX(-50%);
-      transition: all 0.3s ease;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-      border: 2px solid black;
-    }
+.player {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  border: 2px solid black;
+}
 
-    .p0 {
-      background-color: crimson;
-    }
-    .p1 {
-      background-color: royalblue;
-    }
-    .p2 {
-      background-color: seagreen;
-    }
+.p0 {
+  background-color: crimson;
+}
+.p1 {
+  background-color: royalblue;
+}
+.p2 {
+  background-color: seagreen;
+}
 
-    .open-modal-btn {
-      padding: 8px 22px;
-      font-size: 16px;
-      background-color: #4a90e2;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      
-    }
+.open-modal-btn {
+  padding: 14px 5px;
+  font-size: 18px;
+  background-color: #4a90e2;
+  width: 200px;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-    .open-modal-btn:hover {
-      background-color: #357ab7;
-    }
+.open-modal-btn:hover {
+  background-color: #357ab7;
+}
 
-    /* 모달 */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0; top: 150px;
-      width: 100%; height: 100%;
-      
-    }
+/* 모달 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 200px;
+  width: 100%;
+  height: 100%;
+}
 
-    .modal-content {
-      background-color: white;
-      margin: 10% auto;
-      padding: 20px;
-      width: 80%;
-      max-width: 300px;
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.25);
-    }
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 30px;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+}
 
-    .modal h3 {
-      margin-bottom: 15px;
-    }
+.modal h3 {
+  margin-bottom: 15px;
+  font-size: 22px;
+}
 
-    .modal select,
-    .modal button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 5px;
-      border-radius: 8px;
-    }
+.modal select,
+.modal button {
+  padding: 14px;
+  font-size: 18px;
+  margin: 8px;
+  border-radius: 10px;
+}
 
-    .close-btn {
-      background-color: gray;
-      color: white;
-      float: right;
-      margin-top: -20px;
-      margin-right: -20px;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      line-height: 32px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.close-btn {
+  background-color: gray;
+  color: white;
+  float: right;
+  margin-top: -20px;
+  margin-right: -20px;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    .direction-btn {
-      background-color: #5cb85c;
-      color: white;
-      border: none;
-      margin: 10px 5px;
-      transition: 0.2s;
-    }
+.direction-btn {
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  margin: 10px 5px;
+  transition: 0.2s;
+}
 
-    .direction-btn:hover {
-      background-color: #449d44;
-    }
-    .topic-box {
-  margin: 30px auto 20px auto;
-  max-width: 600px;
-  padding: 30px 20px;
-  font-size: 26px;
+.direction-btn:hover {
+  background-color: #449d44;
+}
+
+.topic-box {
+  margin: 40px auto 20px auto;
+  max-width: 700px;
+  padding: 40px 30px;
+  font-size: 35px;
   font-weight: bold;
   color: #333;
   background-color: #f0f8ff;
-  border-radius: 20px;
+  border-radius: 24px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
   animation: fadeIn 0.3s ease;
@@ -179,10 +175,11 @@
   to   { opacity: 1; transform: scale(1); }
 }
 
+
   </style>
 </head>
 <body>
-  <h2>JUST DO IT - 고급 지식 퀴즈</h2>
+  <h1>JUST DO IT -  상식 퀴즈</h1>
 
   <div class="board-wrapper">
     <div class="board" id="gameBoard">
@@ -190,10 +187,12 @@
       <div class="cell"></div>
       <div class="cell"></div>
       <div class="cell"></div>
-      <div class="cell last"></div>
+      <div class="cell"></div>
+      <div class="cell last"></div> <!-- ← 6번째 칸 추가 -->
     </div>
 
-    <div style="display: flex; justify-content: center; gap: 160px; ">
+
+    <div style="display: flex; justify-content: center; gap: 300px; ">
       <div class="label-below">출발</div>
       
       <button class="open-modal-btn" onclick="openModal()">이동하기</button>
@@ -206,7 +205,7 @@
     </div>
 
     
-  <div style="margin-top: 90px;">
+  <div style="margin-top: 110px;">
     <div id="topicDisplay" class="topic-box">
     키워드
     </div>
@@ -233,7 +232,7 @@
 
   <script>
     const positions = [0, 0, 0];
-    const verticalOffsets = [3, 40, 77]; 
+    const verticalOffsets = [2, 48, 95]; 
 
     const board = document.getElementById("gameBoard");
     const playerElems = [];
@@ -263,7 +262,7 @@
       const index = parseInt(document.getElementById("playerSelect").value);
       positions[index] += direction;
       if (positions[index] < 0) positions[index] = 0;
-      if (positions[index] > 4) positions[index] = 4;
+      if (positions[index] > 5) positions[index] = 5;
       updatePosition(index);
     }
 
@@ -278,9 +277,8 @@
     createPlayers();
         // 주제 리스트
     const topics = [
-      "인공지능의 미래",
-      "우주 탐사의 필요성",
-      "인터넷 검열의 윤리",
+      "한국사 또는 세계사",
+      "사자성어 및 속담",
       "생명연장의 기술",
       "메타버스의 가능성",
       "기후변화와 우리의 책임",
@@ -295,7 +293,7 @@
     const selected = topics[randomIndex];
 
     const display = document.getElementById("topicDisplay");
-    display.innerText = selected;
+    display.innerText = `Key Word : ${selected}`;
 
     // 애니메이션 효과 다시 주기
     display.classList.remove("topic-box");
