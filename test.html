@@ -2,31 +2,200 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>휴대폰 HTML 테스트</title>
+  <title>사람 이동 게임</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      margin-top: 50px;
-      background-color: #f0f0f0;
+      background-color: #fdfdfd;
+      padding: 20px;
     }
-    button {
-      padding: 10px 20px;
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    .board {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 30px 0;
+      position: relative;
+    }
+
+    .cell {
+      width: 90px;
+      height: 90px;
+      border-radius: 15px;
+      background-color: #e3eaf5;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .cell.start {
+      background-color: #c8f7c5; /* 연한 초록 */
+    }
+
+    .cell.end {
+      background-color: #c5d8f7; /* 연한 파랑 */
+    }
+
+    .player {
+      position: absolute;
+      font-size: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .p0 { color: crimson; }
+    .p1 { color: royalblue; }
+    .p2 { color: seagreen; }
+
+    .open-modal-btn {
+      padding: 12px 24px;
       font-size: 16px;
-      margin-top: 20px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .open-modal-btn:hover {
+      background-color: #357ab7;
+    }
+
+    /* 모달 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.25);
+    }
+
+    .modal h3 {
+      margin-bottom: 15px;
+    }
+
+    .modal select, .modal button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+      border-radius: 8px;
+    }
+
+    .close-btn {
+      background-color: gray;
+      color: white;
+      float: right;
+      margin-top: -20px;
+      margin-right: -20px;
+      border-radius: 50%;
+      width: 32px; height: 32px;
+      line-height: 32px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .direction-btn {
+      background-color: #5cb85c;
+      color: white;
+      border: none;
+      margin: 10px 5px;
+      transition: 0.2s;
+    }
+
+    .direction-btn:hover {
+      background-color: #449d44;
     }
   </style>
 </head>
 <body>
-  <h1>Hello from your phone!</h1>
-  <p>이 HTML 파일은 휴대폰 브라우저에서도 잘 작동합니다.</p>
-  <button onclick="changeColor()">배경색 바꾸기</button>
+  <div class="board" id="gameBoard">
+    <div class="cell start">출발</div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell end">도착</div>
+  </div>
+
+  <button class="open-modal-btn" onclick="openModal()">이동하기</button>
+
+  <!-- 모달 -->
+  <div id="moveModal" class="modal">
+    <div class="modal-content">
+      <div class="close-btn" onclick="closeModal()">×</div>
+      <select id="playerSelect">
+        <option value="0">👦 사람 1 (빨강)</option>
+        <option value="1">👩 사람 2 (파랑)</option>
+        <option value="2">🧔 사람 3 (초록)</option>
+      </select>
+      <div>
+        <button class="direction-btn" onclick="move(-1)">◀️ 뒤로</button>
+        <button class="direction-btn" onclick="move(1)">▶️ 앞으로</button>
+      </div>
+    </div>
+  </div>
 
   <script>
-    function changeColor() {
-      const colors = ['#f0f0f0', '#ffcccb', '#cce5ff', '#d4edda'];
-      document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    const positions = [0, 0, 0];
+    const icons = ["👦", "👩", "🧔"];
+    const colors = ["p0", "p1", "p2"];
+    const board = document.getElementById('gameBoard');
+    const playerElems = [];
+
+    function createPlayers() {
+      for (let i = 0; i < 3; i++) {
+        const player = document.createElement('div');
+        player.className = `player ${colors[i]}`;
+        player.textContent = icons[i];
+        player.style.top = `${i * 30}px`;
+        board.appendChild(player);
+        playerElems.push(player);
+        updatePosition(i);
+      }
     }
+
+    function updatePosition(index) {
+      const pos = positions[index];
+      const x = board.children[pos].offsetLeft;
+      playerElems[index].style.left = `${x + 30}px`;
+    }
+
+    function move(direction) {
+      const index = parseInt(document.getElementById("playerSelect").value);
+      positions[index] += direction;
+      if (positions[index] < 0) positions[index] = 0;
+      if (positions[index] > 4) positions[index] = 4;
+      updatePosition(index);
+    }
+
+    function openModal() {
+      document.getElementById("moveModal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("moveModal").style.display = "none";
+    }
+
+    createPlayers();
   </script>
+
 </body>
 </html>
