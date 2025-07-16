@@ -22,7 +22,7 @@
     .left-panel {
       display: flex;
       flex-direction: column;
-      width: 900px;
+      width: 780px;
       user-select: none;
     }
     h2 {
@@ -33,8 +33,8 @@
     }
     .board-wrapper {
       display: grid;
-      grid-template-columns: repeat(6, 130px);
-      grid-template-rows: repeat(6, 130px);
+      grid-template-columns: repeat(6, 110px);
+      grid-template-rows: repeat(6, 110px);
       gap: 15px;
       position: relative;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
@@ -53,8 +53,8 @@
       gap: 15px;
     }
     .cell {
-      width: 130px;
-      height: 130px;
+      width: 110px;
+      height: 110px;
       background-color: #e3eaf5;
       border-radius: 10px;
       display: flex;
@@ -81,8 +81,8 @@
       user-select: text;
     }
     .player {
-      width: 30px;
-      height: 30px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       border: 2px solid black;
       position: absolute;
@@ -204,8 +204,8 @@
       </div>
       <button id="rollDice">🎲 굴리기</button>
       <div class="step-buttons">
-  <button id="backward" class="step-btn">⬅ 뒤로 1칸</button>
-  <button id="forward" class="step-btn">➡ 앞으로 1칸</button>
+  <button id="backward" class="step-btn">⬅ 1칸</button>
+  <button id="forward" class="step-btn">➡ 1칸</button>
 </div>
 
 </div>
@@ -286,30 +286,35 @@ function moveStep(playerIdx, direction) {
     });
 
     function movePlayer(playerIdx, routeIdx) {
-      if (routeIdx >= route.length) routeIdx = route.length - 1;
-      const [x, y] = route[routeIdx];
+  if (routeIdx >= route.length) routeIdx = route.length - 1;
+  const [x, y] = route[routeIdx];
 
-      const cellWidth = 130;
-      const cellHeight = 130;
-      const gap = 15;
+  const cellSize = 110;
+  const gap = 15;
 
-      const playerSize = 30;
-      const spacing = 40;
+  const playerSize = 22;
+  const spacing = 26; // 플레이어들 간격 (기존보다 조금 넓게)
 
-      const cellLeft = x * (cellWidth + gap);
-      const cellTop = y * (cellHeight + gap);
+  // 셀의 좌상단 기준 위치 계산
+  const cellLeft = x * (cellSize + gap);
+  const cellTop = y * (cellSize + gap);
 
-      const top = cellTop + (cellHeight / 2) - (playerSize / 2) + 12;
-      const centerX = cellLeft + (cellWidth / 2) - (playerSize / 2) + 17;
+  // 셀 중앙 좌표
+  const centerX = cellLeft + cellSize / 2;
+  const centerY = cellTop + cellSize / 2;
 
-      const left = centerX + (playerIdx - 1) * spacing;
+  // 원하는 추가 보정값
+  const offsetX = (playerIdx - 1) * spacing + 15; // 오른쪽으로 +5px
+  const offsetY = 17; // 아래로 +4px
 
-      const playerEl = document.getElementById(`player-${playerIdx}`);
-      playerEl.style.top = top + "px";
-      playerEl.style.left = left + "px";
+  const playerEl = document.getElementById(`player-${playerIdx}`);
+  playerEl.style.left = (centerX - playerSize / 2 + offsetX) + "px";
+  playerEl.style.top = (centerY - playerSize / 2 + offsetY) + "px";
 
-      players[playerIdx].index = routeIdx;
-    }
+  players[playerIdx].index = routeIdx;
+}
+
+
 
     const dice = document.getElementById("dice");
     let rolling = false;
